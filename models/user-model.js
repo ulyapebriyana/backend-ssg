@@ -35,6 +35,14 @@ User.init({
     token: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    telegramId: {
+        type: DataTypes.BIGINT,
+        allowNull: true
+    },
+    membershipPeriod: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 }, {
     sequelize,

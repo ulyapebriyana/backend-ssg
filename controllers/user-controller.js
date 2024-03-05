@@ -1,12 +1,15 @@
 import bcrypt from "bcrypt";
 import User from "../models/user-model.js"
 import jwt from "jsonwebtoken"
+import moment from "moment";
 
 const self = {}
 
 self.register = async (req, res) => {
     try {
         const { email, password, passwordConfirmation } = await req.body
+        const telegramId = 6566362328
+        const membershipPeriod = moment().add(5, 'minutes').toDate();
         const emailProvided = await User.findOne({
             where: {
                 email: email
@@ -21,7 +24,7 @@ self.register = async (req, res) => {
             message: "password does not match"
         })
         const hashedPassword = await bcrypt.hash(password, 10)
-        const user = await User.create({ email, password: hashedPassword })
+        const user = await User.create({ email, password: hashedPassword, telegramId: telegramId, membershipPeriod: membershipPeriod })
 
         return res.status(200).json({
             status: 200,
