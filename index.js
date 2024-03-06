@@ -49,6 +49,31 @@ app.post("/", async (req, res) => {
     }
 })
 
+app.get("/kick-sync", async(req, res) => {
+    try {
+        console.log('running a task every minute');
+        const users = await User.findAll()
+        const chat_id = -4109977850
+        const userKicked = []
+        await Promise.all(users.map(async (user) => {
+            if (user.membershipPeriod <= new Date()) {
+                await bot.telegram.banChatMember(chat_id, user.telegramId)
+                await user.destroy()
+                // console.log(user);
+                userKicked.push(user.telegramId)
+            }
+        }));
+        console.log(userKicked);
+        return res.status(200).json({
+            status: 200,
+            message: "member is syncronize",
+            data: userKicked
+        })
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 app.post('/add', async (req, res) => {
     try {
         const {chat_id, user_id, name} = await req.body
@@ -76,22 +101,22 @@ try {
 }
 
 
-cron.schedule('* * * * *', async () => {
-    try {
-        console.log('running a task every minute');
-        const users = await User.findAll()
-        const chat_id = -4109977850
-        users.map(async (user) => {
-            if (user.membershipPeriod <= new Date()) {
-                await bot.telegram.banChatMember(chat_id, user.telegramId)
-                await user.destroy()
-                // console.log(user);
-            }
-        })
-    } catch (error) {
-        console.log(error);
-    }
-});
+// cron.schedule('* * * * *', async () => {
+//     try {
+//         console.log('running a task every minute');
+//         const users = await User.findAll()
+//         const chat_id = -4109977850
+//         users.map(async (user) => {
+//             if (user.membershipPeriod <= new Date()) {
+//                 await bot.telegram.banChatMember(chat_id, user.telegramId)
+//                 await user.destroy()
+//                 // console.log(user);
+//             }
+//         })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// });
 
 // bot.launch()
 

@@ -9,7 +9,7 @@ self.register = async (req, res) => {
     try {
         const { email, password, passwordConfirmation } = await req.body
         const telegramId = 6566362328
-        const membershipPeriod = moment().add(5, 'minutes').toDate();
+        const membershipPeriod = moment().add(3, 'minutes').toDate();
         const emailProvided = await User.findOne({
             where: {
                 email: email
